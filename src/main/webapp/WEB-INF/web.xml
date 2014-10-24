@@ -50,7 +50,7 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     
-    <!-- Spring MVC Dispatcher Servlet for cosys application -->
+    <!-- Spring MVC Dispatcher Servlet for call stiker application -->
     <servlet>
         <servlet-name>callStikerServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

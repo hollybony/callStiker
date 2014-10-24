@@ -61,9 +61,6 @@
                     $("#submit").click(function(event) {
                         CrudHandler.newCall();
                     });
-                    $('#editButton').click(function(){
-                        CrudHandler.editRole();
-                    });
                 };
                 CrudHandler.getTrSelected = function(oTableLocal){
                     var aReturn = null;

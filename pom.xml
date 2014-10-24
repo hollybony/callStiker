@@ -8,9 +8,8 @@
     <packaging>war</packaging>
     <version>1.0.0</version>
     <properties>
-        <java-version>1.6</java-version>
+        <java-version>1.7</java-version>
         <org.springframework-version>3.2.3.RELEASE</org.springframework-version>
-        <org.aspectj-version>1.6.11</org.aspectj-version>
         <org.slf4j-version>1.5.10</org.slf4j-version>
         <hibernate.validator.version>4.2.0.Final</hibernate.validator.version>         
     </properties>
@@ -173,8 +172,6 @@
             <version>1.9.2</version>
         </dependency>
         
-      
-        
         <!--For BeanMap-->
         <dependency>
             <groupId>commons-collections</groupId>
@@ -201,7 +198,6 @@
             <groupId>org.springframework</groupId>
             <version>${org.springframework-version}</version>
         </dependency>
-        
     </dependencies>
     <repositories>
         <!-- For testing against latest Spring snapshots -->
@@ -242,7 +238,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.3</version>
                 <configuration>
-                    <warName>cosys</warName>
+                    <warName>callStiker</warName>
                 </configuration>
             </plugin>
             <plugin>
@@ -257,53 +253,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <!-- Have to use version 1.2 since version 1.3 does not appear to work with ITDs -->
-                <version>1.2</version>
-                <dependencies>
-                    <!-- You must use Maven 2.0.9 or above or these are ignored (see MNG-2972) -->
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjrt</artifactId>
-                        <version>${org.aspectj-version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjtools</artifactId>
-                        <version>${org.aspectj-version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <outxml>true</outxml>
-                    <source>${java-version}</source>
-                    <target>${java-version}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                    <junitArtifactName>junit:junit</junitArtifactName>
-                    <excludes>
-                        <exclude>**/*_Roo_*</exclude>
-                    </excludes>
-                    <argLine>
-                        -javaagent:lib/spring-instrument-3.1.0.RELEASE.jar
-                    </argLine>                    
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
