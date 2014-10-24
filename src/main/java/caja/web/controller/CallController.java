@@ -7,6 +7,8 @@ package caja.web.controller;
 
 import caja.domain.Call;
 import caja.services.CallService;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -40,6 +42,9 @@ public class CallController{
     @Autowired
     private CallService roleService;
     
+    
+    private final List<Call> callsToDeliver = new ArrayList<Call>();
+    
 
     /**
      * Stores the <code>Role</code> received as parameter
@@ -47,9 +52,12 @@ public class CallController{
      * @param role - the role to store
      * @param response - it is not used but required by Spring mapping
      */
-    @RequestMapping(value = "store", method = RequestMethod.POST)
+    @RequestMapping(value = "submitCall", method = RequestMethod.POST)
     public void submitCall(@Valid @RequestBody Call call, HttpServletResponse response) {
         logger.debug("storeRole init");
+        synchronized(callsToDeliver){
+            callsToDeliver.add(call);
+        }
     }
     
     /**
@@ -61,9 +69,12 @@ public class CallController{
     @RequestMapping(value = "update", method = RequestMethod.POST)
     public @ResponseBody List<Call> refresh(@Valid @RequestBody Call role, HttpServletResponse response) {
         roleService.updateRole(role);
-        return null;
+        List<Call> calls = new ArrayList<Call>();
+        Collections.copy(calls, callsToDeliver);
+        synchronized(callsToDeliver){
+            callsToDeliver.clear();
+        }
+        return callsToDeliver;
     }
-    
-
     
 }
