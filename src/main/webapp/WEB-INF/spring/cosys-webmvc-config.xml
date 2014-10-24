@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:context="http://www.springframework.org/schema/context" 
+       xmlns:mvc="http://www.springframework.org/schema/mvc" 
+       xmlns:p="http://www.springframework.org/schema/p" 
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd     
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd     
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+       http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+    
+    <bean id="objectMapperFactory" class="com.posabro.web.commons.ObjectMapperFactory"/>
+    
+    <bean id="objectMapper" class="org.codehaus.jackson.map.ObjectMapper" factory-bean="objectMapperFactory" factory-method="instanceObjectMapper"/>
+    
+    <!-- Turns on support for mapping requests to Spring MVC @Controller methods, also registers default Formatters
+    and Validators for use across all @Controllers. Registers a RequestMappingHandlerMapping, a
+    RequestMappingHandlerAdapter, and an ExceptionHandlerExceptionResolver (among others)-->
+    <mvc:annotation-driven validator="validator">
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+                <property name="objectMapper" ref="objectMapper"/>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    
+    <!-- The controllers are autodetected POJOs labeled with the @Controller annotation. -->
+    <context:component-scan base-package="caja.**.controller"/>
+
+    <!-- Handles HTTP GET requests for /resources/** by efficiently serving up static resources -->
+    <mvc:resources location="/resources/" mapping="/resources/**"/>
+
+	
+    <!-- Allows for mapping the DispatcherServlet to "/" by forwarding static resource requests to the container's default Servlet -->
+    <mvc:default-servlet-handler/>
+	
+    <!-- selects a static view for rendering without the need for an explicit controller -->
+    <mvc:view-controller path="/" view-name="index"/>
+    <mvc:view-controller path="/login"/>
+    <mvc:view-controller path="/register"/>
+    <mvc:view-controller path="/generateTempPassword"/>
+    <mvc:view-controller path="/generateNewPassword"/>
+    <mvc:view-controller path="/users"/>
+    <mvc:view-controller path="/roles"/>
+    <mvc:view-controller path="/groups"/>
+    <mvc:view-controller path="/outBoundBoL"/>
+    <mvc:view-controller path="/emailVerified"/>
+    <mvc:view-controller path="/dataAccessFailure"/>
+    <mvc:view-controller path="/resourceNotFound"/>
+    <mvc:view-controller path="/uncaughtException"/>
+
+    <!-- Resolves localized messages*.properties and application.properties files in the application to	allow for internationalization. 
+  		The messages*.properties files translate messages, the application.properties
+  		resource bundle localizes all application specific messages such as entity names and menu items. -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource" p:basenames="WEB-INF/i18n/messages"
+          p:fallbackToSystemLocale="false" p:cacheSeconds="4"/>
+    
+    <!-- store preferred language configuration in a cookie -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"
+          p:cookieName="locale"/>
+	
+    <!-- This bean resolves specific types of exceptions to corresponding logical - view names for error views. 
+    The default behaviour of DispatcherServlet - is to propagate all exceptions to the servlet container: 
+    this will happen - here with all other types of exceptions. -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key=".DataAccessException">dataAccessFailure</prop>
+                <prop key=".NoSuchRequestHandlingMethodException">resourceNotFound</prop>
+                <prop key=".TypeMismatchException">resourceNotFound</prop>
+                <prop key=".MissingServletRequestParameterException">resourceNotFound</prop>
+            </props>
+        </property>
+    </bean>
+	
+    <!-- Enable file upload functionality -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"/>
+    
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/views/" />
+        <property name="suffix" value=".jsp" />
+        <property name="order" value="2"/>
+    </bean>
+    
+    <!-- Tiles Configuration -->
+    <bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
+        <property name="order" value="1"/>
+    </bean>
+    
+    <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+        <property name="definitions">
+            <list>
+                <value>/WEB-INF/tiles/defs/tiles.xml</value>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="reportExcelView" class="com.posabro.web.excel.ReportExcelView">
+        <property name="localeLocator" ref="localeLocator" />
+    </bean>
+    
+    <bean id="reportPdfView" class="com.posabro.web.pdf.ReportPdfView">
+        <property name="localeLocator" ref="localeLocator" />
+    </bean>
+    
+    <bean id="outboundBolPdf" class="com.posabro.ocsys.web.OutboundBolPdfView">
+        <property name="localeLocator" ref="localeLocator" />
+    </bean>
+    
+    <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+        <property name="order" value="0"/>
+    </bean>
+
+    <!--    Configure JSR-303 validation, mvc annotation driven already comes with this kind of validator (as long as JSR-303
+    implementation is available on the classpath)
+    being in the classpath). But if we want to specify our message source we have to declare this bean-->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource" ref="messageSource"/>
+    </bean>
+    
+    <bean id="userInfoProvider" class="com.posabro.ocsys.web.UserInfoProvider" lazy-init="false"/>
+   
+    
+    
+</beans>
