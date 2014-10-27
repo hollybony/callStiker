@@ -36,28 +36,23 @@ public class CallController{
      */
     final org.slf4j.Logger logger = LoggerFactory.getLogger(CallController.class);
     
-    /**
-     * The roleService
-     */
-    @Autowired
-    private CallService roleService;
-    
-    
     private final List<Call> callsToDeliver = new ArrayList<Call>();
     
 
     /**
      * Stores the <code>Role</code> received as parameter
      * 
-     * @param role - the role to store
+     * @param call
      * @param response - it is not used but required by Spring mapping
+     * @return 
      */
     @RequestMapping(value = "submitCall", method = RequestMethod.POST)
-    public void submitCall(@Valid @RequestBody Call call, HttpServletResponse response) {
-        logger.debug("storeRole init");
+    public @ResponseBody boolean submitCall(@Valid @RequestBody Call call, HttpServletResponse response) {
+        logger.debug("submit call " + call);
         synchronized(callsToDeliver){
             callsToDeliver.add(call);
-        }
+        } 
+       return true;
     }
     
     /**
@@ -65,16 +60,17 @@ public class CallController{
      * 
      * @param role - the role to update
      * @param response - it is not used but required by Spring mapping
+     * @return 
      */
-    @RequestMapping(value = "update", method = RequestMethod.POST)
-    public @ResponseBody List<Call> refresh(@Valid @RequestBody Call role, HttpServletResponse response) {
-        roleService.updateRole(role);
-        List<Call> calls = new ArrayList<Call>();
-        Collections.copy(calls, callsToDeliver);
+    @RequestMapping(value = "newCalls", method = RequestMethod.POST)
+    public @ResponseBody List<Call> newCalls(HttpServletResponse response) {
+        List<Call> calls = null;
         synchronized(callsToDeliver){
+            calls = new ArrayList<Call>(callsToDeliver);
             callsToDeliver.clear();
         }
-        return callsToDeliver;
+        logger.debug("new calls : " + calls);
+        return calls;
     }
     
 }

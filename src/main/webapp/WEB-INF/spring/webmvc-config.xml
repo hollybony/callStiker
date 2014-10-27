@@ -38,9 +38,9 @@
     <mvc:default-servlet-handler/>
 	
     <!-- selects a static view for rendering without the need for an explicit controller -->
-    <mvc:view-controller path="/" view-name="index"/>
-    <mvc:view-controller path="/login"/>
-    <mvc:view-controller path="/register"/>
+    <mvc:view-controller path="/" view-name="test"/>
+    <mvc:view-controller path="/calls"/>
+<!--    <mvc:view-controller path="/register"/>
     <mvc:view-controller path="/generateTempPassword"/>
     <mvc:view-controller path="/generateNewPassword"/>
     <mvc:view-controller path="/users"/>
@@ -50,18 +50,8 @@
     <mvc:view-controller path="/emailVerified"/>
     <mvc:view-controller path="/dataAccessFailure"/>
     <mvc:view-controller path="/resourceNotFound"/>
-    <mvc:view-controller path="/uncaughtException"/>
+    <mvc:view-controller path="/uncaughtException"/>-->
 
-    <!-- Resolves localized messages*.properties and application.properties files in the application to	allow for internationalization. 
-  		The messages*.properties files translate messages, the application.properties
-  		resource bundle localizes all application specific messages such as entity names and menu items. -->
-    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource" p:basenames="WEB-INF/i18n/messages"
-          p:fallbackToSystemLocale="false" p:cacheSeconds="4"/>
-    
-    <!-- store preferred language configuration in a cookie -->
-    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver"
-          p:cookieName="locale"/>
-	
     <!-- This bean resolves specific types of exceptions to corresponding logical - view names for error views. 
     The default behaviour of DispatcherServlet - is to propagate all exceptions to the servlet container: 
     this will happen - here with all other types of exceptions. -->
@@ -85,32 +75,7 @@
         <property name="order" value="2"/>
     </bean>
     
-    <!-- Tiles Configuration -->
-    <bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
-        <property name="order" value="1"/>
-    </bean>
-    
-    <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
-        <property name="definitions">
-            <list>
-                <value>/WEB-INF/tiles/defs/tiles.xml</value>
-            </list>
-        </property>
-    </bean>
-    
-    <bean id="reportExcelView" class="com.posabro.web.excel.ReportExcelView">
-        <property name="localeLocator" ref="localeLocator" />
-    </bean>
-    
-    <bean id="reportPdfView" class="com.posabro.web.pdf.ReportPdfView">
-        <property name="localeLocator" ref="localeLocator" />
-    </bean>
-    
-    <bean id="outboundBolPdf" class="com.posabro.ocsys.web.OutboundBolPdfView">
-        <property name="localeLocator" ref="localeLocator" />
-    </bean>
-    
+ 
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
         <property name="order" value="0"/>
     </bean>
@@ -121,9 +86,6 @@
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
         <property name="validationMessageSource" ref="messageSource"/>
     </bean>
-    
-    <bean id="userInfoProvider" class="com.posabro.ocsys.web.UserInfoProvider" lazy-init="false"/>
-   
     
     
 </beans>
