@@ -33,10 +33,10 @@
                 };    
                 CrudHandler.pool = function(){
                     var successCallback = function(data){
-                        if(data!==''){
-//                            alert(data);  // process results here
-                        }
-                        setTimeout(CrudHandler.pool,5000);
+                    if(data.length>0){
+                        alert(JSON.stringify(data));
+                    }
+                    setTimeout(CrudHandler.pool,5000);
                     };
                     var errorCallback = function(xhr){
                         ExceptionHandler.handleAjax(xhr);

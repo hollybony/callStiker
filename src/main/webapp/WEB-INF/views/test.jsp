@@ -48,13 +48,12 @@
                     call.caller = caller.val();
                     call.phoneNumber = phoneNumber.val();
                     var successCallback = function(xhr){
-                        alert('submit done');
+//                        alert('submit done');
                         /*CrudHandler.refreshTable();*/
                     };
                     var errorCallback = function(xhr){
                         ExceptionHandler.handleAjax(xhr);
                     };
-                    alert('submit');
                     //                        $.post('roleController/store',JSON.stringify(currentRole),callback,'json');
                     $.ajax(
                     { type: "POST",

@@ -38,8 +38,8 @@
     <mvc:default-servlet-handler/>
 	
     <!-- selects a static view for rendering without the need for an explicit controller -->
-    <mvc:view-controller path="/" view-name="test"/>
-    <mvc:view-controller path="/calls"/>
+    <mvc:view-controller path="/" view-name="calls"/>
+    <mvc:view-controller path="/test"/>
 <!--    <mvc:view-controller path="/register"/>
     <mvc:view-controller path="/generateTempPassword"/>
     <mvc:view-controller path="/generateNewPassword"/>
